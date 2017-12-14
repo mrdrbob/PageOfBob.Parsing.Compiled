@@ -101,5 +101,39 @@ namespace PageOfBob.Parsing.Compiled.Tests
             parser.AssertSuccess("bbb", "bbb", 3);
             parser.AssertSuccess("z", "", 0);
         }
+
+        [Fact]
+        public void PositionWorks()
+        {
+            var parser = GetPosition
+                .ThenIgnore(Match('a'))
+                .Then(GetPosition, (l, r) => $"{l} - {r}")
+                .CompileParser("PositionWorks");
+
+            parser.AssertSuccess("a", "0 - 1", 1);
+        }
+
+        [Fact]
+        public void OptionalWorks()
+        {
+            var parser = Match('a').Optional('0')
+                .ThenIgnore(Match('b'))
+                .CompileParser("OptionalWorks");
+
+            parser.AssertSuccess("ab", 'a', 2);
+            parser.AssertSuccess("b", '0', 1);
+        }
+
+        [Fact]
+        public void WhenWorks()
+        {
+            var parser = IMatch('a').When(char.IsUpper, "is capital")
+                .CompileParser("WhenWorks");
+
+            parser.AssertSuccess("A", 'A', 1);
+            parser.AssertFailure("a", 0);
+            parser.AssertFailure("b", 0);
+            parser.AssertFailure("", 0);
+        }
     }
 }

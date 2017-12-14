@@ -2,6 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>PageOfBob.Parsing.Compiled</PackageId>
+    <PackageVersion>1.0.0-alpha0</PackageVersion>
+    <Version>1.0.0</Version>
+    <Authors>Bob Davidson</Authors>
+    <Description>Tiny, experimental library for generating parsers in C#</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>
+      Initial alpha release
+    </PackageReleaseNotes>
+    <Copyright>Copyright 2017 (c) Bob Davidson. All rights reserved.</Copyright>
+    <PackageTags>parse parsing</PackageTags>
+    <Authors>Bob Davidson</Authors>
+    <PackageProjectUrl>https://github.com/mrdrbob/PageOfBob.Parsing.Compiled</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mrdrbob/PageOfBob.Parsing.Compiled</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/mrdrbob/PageOfBob.Parsing.Compiled/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>parsing</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

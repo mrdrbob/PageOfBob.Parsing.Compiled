@@ -45,6 +45,28 @@ namespace PageOfBob.Parsing.Compiled.Tests
         }
 
         [Fact]
+        public void MatchSpanWorks()
+        {
+            var parser = Match(char.IsLetter).CompileParser("MatchSpanWorks");
+            parser.AssertSuccess("abc3", new StringSpan("abc3", 0, 3), 3);
+            parser.AssertSuccess("", new StringSpan("", 0, 0), 0);
+            parser.AssertSuccess("abc", new StringSpan("abc", 0, 3), 3);
+
+            var result = parser.TryParse("abc3", out StringSpan span, out int position);
+            Assert.True(result);
+            Assert.True(span.Matches("abc"));
+        }
+
+        [Fact]
+        public void MatchSpanRequiredWorks()
+        {
+            var parser = Match(char.IsLetter).Required().CompileParser("MatchSpanRequiredWorks");
+            parser.AssertSuccess("abc3", new StringSpan("abc3", 0, 3), 3);
+            parser.AssertFailure("3", 0);
+            parser.AssertFailure("", 0);
+        }
+
+        [Fact]
         public void IsLetterWorks()
         {
             var parser = IsLetter.CompileParser("IsLetterWorks");
