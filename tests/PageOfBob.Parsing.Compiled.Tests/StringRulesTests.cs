@@ -58,6 +58,18 @@ namespace PageOfBob.Parsing.Compiled.Tests
         }
 
         [Fact]
+        public void CanConcatSequentialSpans()
+        {
+            var parser = Match(char.IsLetter)
+                .Then(Match(char.IsDigit), StringSpanExtensions.CombineSequential)
+                .CompileParser("CanConcatSequentialSpans");
+            parser.AssertSuccess("ab12cc", new StringSpan("ab12cc", 0, 4), 4);
+            parser.AssertSuccess("ab", new StringSpan("ab", 0, 2), 2);
+            parser.AssertSuccess("34", new StringSpan("34", 0, 2), 2);
+            parser.AssertSuccess("!", new StringSpan("!", 0, 0), 0);
+        }
+
+        [Fact]
         public void MatchSpanRequiredWorks()
         {
             var parser = Match(char.IsLetter).Required().CompileParser("MatchSpanRequiredWorks");
