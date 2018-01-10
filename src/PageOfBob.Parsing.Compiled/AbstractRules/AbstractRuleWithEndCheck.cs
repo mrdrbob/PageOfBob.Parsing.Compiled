@@ -1,9 +1,11 @@
 ﻿using Sigil;
 
-namespace PageOfBob.Parsing.Compiled.StringRules
+namespace PageOfBob.Parsing.Compiled.AbstractRules
 {
     public abstract class AbstractRuleWithEndCheck<T> : IRule<T>
     {
+        public abstract string Name { get; }
+
         protected abstract void EmitLogic<TDelegate>(CompilerContext<TDelegate> context, Label success);
 
         public bool Emit<TDelegate>(CompilerContext<TDelegate> context, Label success)
@@ -22,7 +24,5 @@ namespace PageOfBob.Parsing.Compiled.StringRules
             emit.MarkLabel(fail); // pos
             return true;
         }
-
-        public abstract string Name { get; }
     }
 }

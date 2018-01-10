@@ -1,4 +1,5 @@
-﻿using PageOfBob.Parsing.Compiled.GeneralRules;
+﻿/*
+using PageOfBob.Parsing.Compiled.GeneralRules;
 using PageOfBob.Parsing.Compiled.StringRules;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ namespace PageOfBob.Parsing.Compiled
     public static class Rules
     {
         public static IRule<char> Match(params char[] c) => new MatchCharRule(c);
-        public static IRule<StringSpan> Match(Func<char, bool> match, string name = null) => new MatchSpanRule(match, name);
+        public static IRule<StringSpan> MatchSpan(params char[] c) => new MatchCharSpanRule(c);
+        public static IRule<StringSpan> MatchSpanMany(Func<char, bool> match, string name = null) => new MatchSpanRule(match, name);
         public static IRule<char> IMatch(params char[] c) => new MatchCharInsensitiveRule(c);
         public static readonly IRule<char> IsLetter = new IsCharacterTypeMatchRule("IsLetter");
         public static readonly IRule<char> IsDigit = new IsCharacterTypeMatchRule("IsDigit");
@@ -16,9 +18,11 @@ namespace PageOfBob.Parsing.Compiled
         public static readonly IRule<char> IsWhiteSpace = new IsCharacterTypeMatchRule("IsWhiteSpace");
         public static readonly IRule<int> GetPosition = new GetPositionRule();
         public static IRule<string> ManyAsText(this IRule<char> rule, string name = null) => new ManyAsTextRule(rule, name);
+        public static IRule<StringSpan> ManyAsSpan(this IRule<StringSpan> rule, string name = null) => new ManySpanRule(rule, name);
         public static IRule<string> Required(this IRule<string> rule, string name = null) => new StringRequiredRule(rule, name);
         public static IRule<StringSpan> Required(this IRule<StringSpan> rule, string name = null) => new SpanRequiredRule(rule, name);
         public static IRule<char> Not<T>(this IRule<T> rule, string name = null) => new NotRule<T>(rule, name);
+        public static IRule<StringSpan> NotSpan<T>(this IRule<T> rule, string name = null) => new NotSpanRule<T>(rule, name);
         public static IRule<string> Text(string expectedValue, bool caseInsensitive = false, string name = null) => new TextRule(expectedValue, caseInsensitive, name);
 
         public static IRule<T> Any<T>(params IRule<T>[] rules) => new AnyRule<T>(rules);
@@ -32,3 +36,4 @@ namespace PageOfBob.Parsing.Compiled
         public static IRule<T> When<T>(this IRule<T> rule, Func<T, bool> condition, string conditionName = null) => new WhenRule<T>(rule, condition, conditionName);
     }
 }
+*/

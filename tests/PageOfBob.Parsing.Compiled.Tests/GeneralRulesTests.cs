@@ -1,10 +1,31 @@
 ﻿using Xunit;
-using static PageOfBob.Parsing.Compiled.Rules;
+using static PageOfBob.Parsing.Compiled.StringRules.Rules;
+using static PageOfBob.Parsing.Compiled.GeneralRules.Rules;
+using System;
 
 namespace PageOfBob.Parsing.Compiled.Tests
 {
     public class GeneralRulesTests
     {
+        [Fact]
+        public void AlwaysWorks()
+        {
+            int count = 0;
+            int generate() => count++;
+
+            var parser = Always(generate).CompileParser("AlwaysWorks");
+            parser.AssertSuccess("", 0, 0);
+            parser.AssertSuccess("test", 1, 0);
+        }
+
+        [Fact]
+        public void AlwaysValueWorks()
+        {
+            var parser = Always(9).CompileParser("AlwaysValueWorks");
+            parser.AssertSuccess("", 9, 0);
+            parser.AssertSuccess("test", 9, 0);
+        }
+
         [Fact]
         public void AnyWorks()
         {
@@ -18,9 +39,8 @@ namespace PageOfBob.Parsing.Compiled.Tests
         public void AnyWorksWithRulesThatCantFail()
         {
             var parser = Any(
-                    Match('a').Many(),
-                    Match('b').Many())
-                .Map(x => new string(x.ToArray()))
+                    Text('a'),
+                    Text('b'))
                 .CompileParser("AnyWorksWithRulesThatCantFail");
 
             parser.AssertSuccess("aaabb", "aaa", 3);
@@ -54,14 +74,6 @@ namespace PageOfBob.Parsing.Compiled.Tests
         }
 
         [Fact]
-        public void RequiredWorks()
-        {
-            var parser = Match('a').Many().Required().Map(x => new string(x.ToArray())).CompileParser("RequiredWorks");
-            parser.AssertSuccess("aaa", "aaa", 3);
-            parser.AssertFailure("b", 0);
-        }
-
-        [Fact]
         public void ThenKeepWorks()
         {
             var parser = Match('a').ThenKeep(Match('b')).CompileParser("ThenKeepWorks");
@@ -91,9 +103,8 @@ namespace PageOfBob.Parsing.Compiled.Tests
         [Fact]
         public void ThenWorksWhenNeitherRuleCanFail()
         {
-            var parser = Match('a').Many()
-                .ThenKeep(Match('b').Many())
-                .Map(x => new string(x.ToArray()))
+            var parser = Text('a')
+                .ThenKeep(Text('b'))
                 .CompileParser("ThenWorksWhenNeitherRuleCanFail");
 
             parser.AssertSuccess("aaabb", "bb", 5);
@@ -114,17 +125,6 @@ namespace PageOfBob.Parsing.Compiled.Tests
         }
 
         [Fact]
-        public void OptionalWorks()
-        {
-            var parser = Match('a').Optional('0')
-                .ThenIgnore(Match('b'))
-                .CompileParser("OptionalWorks");
-
-            parser.AssertSuccess("ab", 'a', 2);
-            parser.AssertSuccess("b", '0', 1);
-        }
-
-        [Fact]
         public void WhenWorks()
         {
             var parser = IMatch('a').When(char.IsUpper, "is capital")
@@ -134,6 +134,17 @@ namespace PageOfBob.Parsing.Compiled.Tests
             parser.AssertFailure("a", 0);
             parser.AssertFailure("b", 0);
             parser.AssertFailure("", 0);
+        }
+
+        [Fact]
+        public void OptionalWorks()
+        {
+            var parser = Match('a').Optional('0')
+                .ThenIgnore(Match('b'))
+                .CompileParser("OptionalWorks");
+
+            parser.AssertSuccess("ab", 'a', 2);
+            parser.AssertSuccess("b", '0', 1);
         }
     }
 }

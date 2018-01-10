@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Xunit;
-using static PageOfBob.Parsing.Compiled.Rules;
+using static PageOfBob.Parsing.Compiled.StringRules.Rules;
 
 namespace PageOfBob.Parsing.Compiled.Tests
 {

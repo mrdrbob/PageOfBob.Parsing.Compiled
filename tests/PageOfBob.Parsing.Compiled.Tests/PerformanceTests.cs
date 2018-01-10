@@ -27,13 +27,43 @@ namespace PageOfBob.Parsing.Compiled.Tests
                 rawCsv = new StreamReader(stream).ReadToEnd();
             }
 
-            var parser = ExampleCsvParser.ParseCsvLine();
+            var parser = ExampleCsvParserString.ParseCsvLine();
 
-            int timesToRun = 5;
+            int timesToRun = 50;
             long totalTime = 0;
             var stopWatch = new Stopwatch();
 
             for(int x = 0; x < timesToRun; x++)
+            {
+                stopWatch.Start();
+                var result  = parser.AsEnumerable(rawCsv).ToList();
+                stopWatch.Stop();
+                Assert.Equal(5000, result.Count);
+                totalTime += stopWatch.ElapsedMilliseconds;
+                stopWatch.Reset();
+            }
+
+            float meanTime = totalTime / (float)timesToRun;
+            output.WriteLine($"Mean time: {meanTime}");
+        }
+
+        [Fact]
+        public void ParseCsvSpan()
+        {
+            var assembly = Assembly.GetAssembly(typeof(PerformanceTests));
+            string rawCsv;
+            using (var stream = assembly.GetManifestResourceStream("PageOfBob.Parsing.Compiled.Tests.example.csv"))
+            {
+                rawCsv = new StreamReader(stream).ReadToEnd();
+            }
+
+            var parser = ExampleCsvParserSpan.ParseCsvLine();
+
+            int timesToRun = 50;
+            long totalTime = 0;
+            var stopWatch = new Stopwatch();
+
+            for (int x = 0; x < timesToRun; x++)
             {
                 stopWatch.Start();
                 var result = parser.AsEnumerable(rawCsv).ToList();

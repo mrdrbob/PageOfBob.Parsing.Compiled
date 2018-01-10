@@ -1,26 +1,28 @@
 ﻿using System.Collections.Generic;
-using static PageOfBob.Parsing.Compiled.Rules;
+using System.Linq;
+using static PageOfBob.Parsing.Compiled.GeneralRules.Rules;
+using static PageOfBob.Parsing.Compiled.SpanRules.Rules;
 
 namespace PageOfBob.Parsing.Compiled.Tests
 {
-    public static class ExampleCsvParser
+    public static class ExampleCsvParserSpan
     {
-        static IParser<List<string>> parser;
+        static IParser<List<StringSpan>> parser;
 
-        public static IParser<List<string>> ParseCsvLine() => parser ?? (parser = _ParseCsvLine());
+        public static IParser<List<StringSpan>> ParseCsvLine() => parser ?? (parser = _ParseCsvLine());
 
-        static IParser<List<string>> _ParseCsvLine()
+        static IParser<List<StringSpan>> _ParseCsvLine()
         {
             var quote = Match('"');
             var comma = Match(',');
-            var whitespace = Match(' ', '\t').Many(false);
-            var eol = Match('\r', '\n').Many().Required();
+            var whitespace = Text(' ', '\t');
+            var eol = Text('\r', '\n').Required();
 
             var doubleQuote = quote.ThenIgnore(quote);
-            var quotedContent = Any(quote.Not(), doubleQuote).ManyAsText();
+            var quotedContent = Any(quote.Not(), doubleQuote).Many().Map(x => x.Aggregate((a, b) => a.CombineSequential(b)));
 
             var quotedValue = quote.ThenKeep(quotedContent).ThenIgnore(quote);
-            var unquotedValue = Match('"', ',', '\n', '\r').Not().ManyAsText();
+            var unquotedValue = Text(x => x != '"' && x != ',' && x != '\n' && x != '\r');
             var value = Any(quotedValue, unquotedValue).ThenIgnore(whitespace);
             var secondValue = comma.ThenIgnore(whitespace).ThenKeep(value);
 
@@ -34,7 +36,7 @@ namespace PageOfBob.Parsing.Compiled.Tests
                 })
                 .ThenIgnore(eol);
 
-            return line.CompileParser("CsvLineParser");
+            return line.CompileParser("CsvLineParserSpan");
         }
     }
 }

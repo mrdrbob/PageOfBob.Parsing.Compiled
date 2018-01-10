@@ -2,7 +2,8 @@
 {
     public class ThenKeepRule<L, R> : AbstractThenRule<L, R, R>
     {
-        public ThenKeepRule(IRule<L> leftRule, IRule<R> rightRule, string name) : base(leftRule, rightRule) {
+        public ThenKeepRule(IRule<L> leftRule, IRule<R> rightRule, string name) : base(leftRule, rightRule)
+        {
             Name = name ?? $"( {leftRule.Name} then keep {rightRule.Name} )";
         }
 

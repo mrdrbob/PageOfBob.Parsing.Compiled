@@ -1,14 +1,14 @@
 ﻿using Sigil;
 
-namespace PageOfBob.Parsing.Compiled.StringRules
+namespace PageOfBob.Parsing.Compiled.SpanRules
 {
-    public class NotRule<K> : AbstractRules.AbstractNotRule<char, K>
+    public class NotRule<K> : AbstractRules.AbstractNotRule<StringSpan, K>
     {
         public NotRule(IRule<K> rule, string name = null) : base(rule, name) { }
 
         protected override void EmitSuccessLogic<TDelegate>(CompilerContext<TDelegate> context, Local pos)
         {
-            context.EmitLoadChar(pos);
+            context.EmitLoadStringSpan(pos);
         }
     }
 }
