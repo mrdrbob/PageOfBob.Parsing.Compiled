@@ -15,7 +15,7 @@ namespace PageOfBob.Parsing.Compiled.GeneralRules
             this.rightRule = rightRule;
         }
 
-        protected abstract void EmitTransform<TDelegate>(CompilerContext<TDelegate> context);
+        protected abstract void EmitTransform<TDelegate>(CompilerContext<TDelegate> context, Local pos);
 
         public bool Emit<TDelegate>(CompilerContext<TDelegate> context, Label success)
         {
@@ -56,7 +56,7 @@ namespace PageOfBob.Parsing.Compiled.GeneralRules
                 // Right success:
                 // lv, rv, pos3
                 emit.StoreLocal(pos); // lv, rv
-                EmitTransform(context); // Should return nv
+                EmitTransform(context, pos); // Should return nv
                 emit.LoadLocal(pos);  // nv, pos3
                 emit.Branch(success);
 

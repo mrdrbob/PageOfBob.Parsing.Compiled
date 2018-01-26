@@ -24,15 +24,10 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
             // pos
             using (var oPos = emit.DeclareLocal<int>())
             using (var pos = emit.DeclareLocal<int>())
-            using (var len = emit.DeclareLocal<int>())
             {
                 emit.Duplicate(); // pos, pos
                 emit.StoreLocal(pos); // pos
                 emit.StoreLocal(oPos); // ...
-
-                emit.LoadArgument(1); // str
-                emit.CallVirtual(typeof(string).GetProperty("Length").GetMethod); // len
-                emit.StoreLocal(len); // ...
 
                 // Start
                 var start = emit.DefineLabel(); // ...
@@ -40,7 +35,7 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
                 emit.MarkLabel(start);
 
                 emit.LoadLocal(pos); // pos
-                emit.LoadLocal(len); // pos, len
+                emit.LoadLocal(context.LengthLocal); // pos, len
                 emit.BranchIfGreaterOrEqual(end); // ...
 
                 emit.LoadLocal(pos); // pos

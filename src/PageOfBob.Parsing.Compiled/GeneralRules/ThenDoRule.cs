@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sigil;
+using System;
 
 namespace PageOfBob.Parsing.Compiled.GeneralRules
 {
@@ -15,7 +16,7 @@ namespace PageOfBob.Parsing.Compiled.GeneralRules
 
         public override string Name => name;
 
-        protected override void EmitTransform<TDelegate>(CompilerContext<TDelegate> context) //lv, rv
+        protected override void EmitTransform<TDelegate>(CompilerContext<TDelegate> context, Local pos) //lv, rv
         {
             var field = context.SaveInField(transform);
             var emit = context.Emit;

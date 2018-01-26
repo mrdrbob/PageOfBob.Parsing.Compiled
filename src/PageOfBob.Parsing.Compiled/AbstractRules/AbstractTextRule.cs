@@ -16,15 +16,10 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
             var end = emit.DefineLabel();
 
             using (var oPos = emit.DeclareLocal<int>())
-            using (var len = emit.DeclareLocal<int>())
             {
                 // pos
                 emit.Duplicate(); // pos, pos
                 emit.StoreLocal(oPos); // pos
-
-                emit.LoadArgument(1); // pos, str
-                emit.CallVirtual(typeof(string).GetProperty("Length").GetMethod); // pos, len
-                emit.StoreLocal(len); // pos
 
                 // START LOOP
                 var loopStart = emit.DefineLabel(); 
@@ -32,13 +27,13 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
 
                 // Check len
                 emit.Duplicate(); //pos, pos
-                emit.LoadLocal(len); // pos, pos, len
+                emit.LoadLocal(context.LengthLocal); // pos, pos, len
                 emit.BranchIfGreaterOrEqual(end); // pos
 
                 using (var pos = emit.DeclareLocal<int>())
                 {
                     emit.StoreLocal(pos); // ...
-                    emit.LoadArgument(1); // str
+                    emit.LoadLocal(context.StringLocal); // str
                     emit.LoadLocal(pos); // str, pos
                     emit.CallVirtual(typeof(string).GetMethod("get_Chars", new[] { typeof(int) })); // c
 

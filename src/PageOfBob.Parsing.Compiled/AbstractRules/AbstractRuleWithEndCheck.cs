@@ -13,8 +13,7 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
             var emit = context.Emit;
 
             emit.Duplicate(); // pos, pos
-            emit.LoadArgument(1); // pos, pos, str
-            emit.CallVirtual(typeof(string).GetProperty("Length").GetMethod); // pos, pos, len
+            emit.LoadLocal(context.LengthLocal); // pos, pos, len
             var fail = emit.DefineLabel();
             emit.BranchIfGreaterOrEqual(fail); // pos
 

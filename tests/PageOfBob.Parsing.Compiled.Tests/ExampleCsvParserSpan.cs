@@ -19,22 +19,14 @@ namespace PageOfBob.Parsing.Compiled.Tests
             var eol = Text('\r', '\n').Required();
 
             var doubleQuote = quote.ThenIgnore(quote);
-            var quotedContent = Any(quote.Not(), doubleQuote).Many().Map(x => x.Aggregate((a, b) => a.CombineSequential(b)));
+            var quotedContent = GetPosition
+                .ThenIgnore(Any(quote.Not(), doubleQuote).Many(keepResults: false))
+                .ThenCreateSpan();
 
             var quotedValue = quote.ThenKeep(quotedContent).ThenIgnore(quote);
             var unquotedValue = Text(x => x != '"' && x != ',' && x != '\n' && x != '\r');
             var value = Any(quotedValue, unquotedValue).ThenIgnore(whitespace);
-            var secondValue = comma.ThenIgnore(whitespace).ThenKeep(value);
-
-            // TODO: Find a better way to do this.
-            // Stupid separators.
-            var line = value
-                .Then(secondValue.Many(), (first, list) =>
-                {
-                    list.Insert(0, first);
-                    return list;
-                })
-                .ThenIgnore(eol);
+            var line = value.Many(comma.ThenIgnore(whitespace)).ThenIgnore(eol);
 
             return line.CompileParser("CsvLineParserSpan");
         }

@@ -18,6 +18,8 @@ namespace PageOfBob.Parsing.Compiled
 
         public System.Reflection.Emit.TypeBuilder TypeBuilder { get; }
         public Emit<TryParse<T>> Emit { get; }
+        public Local StringLocal { get; set; }
+        public Local LengthLocal { get; set; }
 
         public CompilerContext(string parserName)
         {
@@ -66,64 +68,77 @@ namespace PageOfBob.Parsing.Compiled
             var success = emit.DefineLabel();
             var end = emit.DefineLabel();
 
-            // Start at zero index
-            emit.LoadArgument(4); // pos
-
-            // Emit the rule
-            bool canFail = rule.Emit(context, success); // pos
-
-            if (canFail)
+            using (var str = emit.DeclareLocal<string>())
+            using (var len = emit.DeclareLocal<int>())
             {
+                emit.LoadArgument(1); // str
+                emit.Duplicate(); // str, str
+                emit.CallVirtual(typeof(string).GetProperty("Length").GetMethod); // str, len
+                emit.StoreLocal(len); // str 
+                emit.StoreLocal(str); // ...
+
+                context.StringLocal = str;
+                context.LengthLocal = len;
+
+                // Start at zero index
+                emit.LoadArgument(4); // pos
+
+                // Emit the rule
+                bool canFail = rule.Emit(context, success); // pos
+
+                if (canFail)
+                {
+                    // Put pos in the appropriate place
+                    using (var pos = emit.DeclareLocal<int>())
+                    {
+                        emit.StoreLocal(pos); // ...
+                        emit.LoadArgument(3); // pos_addr
+                        emit.LoadLocal(pos); // pos_addr, pos
+                        emit.StoreObject<int>(); // ...
+                    }
+
+                    // FAILED BRANCH: ...
+                    emit.LoadArgument(2); // addr
+                    emit.InitializeObject<T>(); // def
+
+                    emit.LoadConstant(false); // false
+                    emit.Branch(end); // end.
+                }
+
+                // SUCCESS BRANCH:
+                emit.MarkLabel(success); // v, pos
+
                 // Put pos in the appropriate place
                 using (var pos = emit.DeclareLocal<int>())
                 {
-                    emit.StoreLocal(pos); // ...
-                    emit.LoadArgument(3); // pos_addr
-                    emit.LoadLocal(pos); // pos_addr, pos
-                    emit.StoreObject<int>(); // ...
+                    emit.StoreLocal(pos); // v
+                    emit.LoadArgument(3); // v, pos_addr
+                    emit.LoadLocal(pos); // v, pos_addr, pos
+                    emit.StoreObject<int>(); // v
                 }
 
-                // FAILED BRANCH: ...
-                emit.LoadArgument(2); // addr
-                emit.InitializeObject<T>(); // def
+                using (var val = emit.DeclareLocal<T>())
+                {
+                    emit.StoreLocal(val); // ...
+                    emit.LoadArgument(2); // addr
+                    emit.LoadLocal(val); // addr, v
+                }
 
-                emit.LoadConstant(false); // false
-                emit.Branch(end); // end.
+                if (type.GetTypeInfo().IsValueType)
+                {
+                    emit.StoreObject(typeof(T)); // ...
+                }
+                else
+                {
+                    emit.StoreIndirect<T>(); // ...
+                }
+                emit.LoadConstant(true); // true
+
+                emit.MarkLabel(end);
+                emit.Return();
+
+                context.Emit.CreateMethod();
             }
-
-            // SUCCESS BRANCH:
-            emit.MarkLabel(success); // v, pos
-
-            // Put pos in the appropriate place
-            using (var pos = emit.DeclareLocal<int>())
-            {
-                emit.StoreLocal(pos); // v
-                emit.LoadArgument(3); // v, pos_addr
-                emit.LoadLocal(pos); // v, pos_addr, pos
-                emit.StoreObject<int>(); // v
-            }
-
-            using (var val = emit.DeclareLocal<T>())
-            {
-                emit.StoreLocal(val); // ...
-                emit.LoadArgument(2); // addr
-                emit.LoadLocal(val); // addr, v
-            }
-
-            if (type.GetTypeInfo().IsValueType)
-            {
-                emit.StoreObject(typeof(T)); // ...
-            }
-            else
-            {
-                emit.StoreIndirect<T>(); // ...
-            }
-            emit.LoadConstant(true); // true
-
-            emit.MarkLabel(end);
-            emit.Return();
-
-            context.Emit.CreateMethod();
 
             return context.Finalize();
         }

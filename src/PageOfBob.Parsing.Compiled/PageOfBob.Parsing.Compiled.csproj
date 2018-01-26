@@ -3,15 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>PageOfBob.Parsing.Compiled</PackageId>
-    <PackageVersion>1.0.0-alpha2</PackageVersion>
+    <PackageVersion>1.0.0-alpha3</PackageVersion>
     <Version>1.0.0</Version>
     <Authors>Bob Davidson</Authors>
     <Description>Tiny, experimental library for generating parsers in C#</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>
-      Reorganized API
+      Added "separator" support to Many rule.
+      Added "ThenCreate" rules (see example CSV parsers in tests)
     </PackageReleaseNotes>
-    <Copyright>Copyright 2017 (c) Bob Davidson. All rights reserved.</Copyright>
+    <Copyright>Copyright 2018 (c) Bob Davidson. All rights reserved.</Copyright>
     <PackageTags>parse parsing</PackageTags>
     <Authors>Bob Davidson</Authors>
     <PackageProjectUrl>https://github.com/mrdrbob/PageOfBob.Parsing.Compiled</PackageProjectUrl>

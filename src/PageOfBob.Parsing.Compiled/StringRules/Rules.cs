@@ -28,6 +28,7 @@ namespace PageOfBob.Parsing.Compiled.StringRules
         public static IRule<string> Text(Func<char, bool> match, string name = null) => new TextFuncRule(match, name);
         public static IRule<string> NotText<K>(this IRule<K> rule, string name = null) => new NotTextRule<K>(rule, name);
         public static IRule<string> Required(this IRule<string> rule) => new RequiredRule(rule);
+        public static IRule<string> ThenCreateString(this IRule<int> rule, string name = null) => new ThenCreateStringRule(rule, name);
 
         public static readonly IRule<string> IsControlText = new TextCharacterClassRule("IsControl");
         public static readonly IRule<string> IsDigitText = new TextCharacterClassRule("IsDigit");

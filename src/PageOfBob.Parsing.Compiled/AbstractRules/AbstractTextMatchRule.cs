@@ -27,8 +27,7 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
             emit.Duplicate(); // pos, pos
             emit.LoadConstant(textToMatch.Length); // pos, pos, expLen
             emit.Add(); // pos, minLen
-            emit.LoadArgument(1); // pos, minLen, string
-            emit.CallVirtual(typeof(string).GetProperty("Length").GetMethod); // pos, minLen, len
+            emit.LoadLocal(context.LengthLocal); // pos, minLen, len
             emit.BranchIfGreater(fail); // minPos > len -- too short.
 
             using (var oPos = emit.DeclareLocal<int>())
@@ -41,7 +40,7 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
                 foreach(var c in textToMatch)
                 {
                     var localSuccess = emit.DefineLabel();
-                    emit.LoadArgument(1); // str
+                    emit.LoadLocal(context.StringLocal); // str
                     emit.LoadLocal(pos); // str, pos
                     emit.CallVirtual(typeof(string).GetMethod("get_Chars", new[] { typeof(int) })); // c
                     if (!caseSensitive)

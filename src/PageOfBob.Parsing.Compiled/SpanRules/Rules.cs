@@ -28,6 +28,7 @@ namespace PageOfBob.Parsing.Compiled.SpanRules
         public static IRule<StringSpan> Text(Func<char, bool> match, string name = null) => new TextFuncRule(match, name);
         public static IRule<StringSpan> NotText<K>(this IRule<K> rule, string name = null) => new NotTextRule<K>(rule, name);
         public static IRule<StringSpan> Required(this IRule<StringSpan> rule) => new RequiredRule(rule);
+        public static IRule<StringSpan> ThenCreateSpan(this IRule<int> rule, string name = null) => new ThenCreateSpanRule(rule, name);
 
         public static readonly IRule<StringSpan> IsControlText = new TextCharacterClassRule("IsControl");
         public static readonly IRule<StringSpan> IsDigitText = new TextCharacterClassRule("IsDigit");

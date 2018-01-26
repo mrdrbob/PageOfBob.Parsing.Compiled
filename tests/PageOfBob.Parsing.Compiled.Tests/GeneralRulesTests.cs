@@ -74,6 +74,15 @@ namespace PageOfBob.Parsing.Compiled.Tests
         }
 
         [Fact]
+        public void ManyWithSepWorks()
+        {
+            var parser = Match('a').Many(Match(',')).Map(x => new string(x.ToArray())).CompileParser("ManyWithSepWorks");
+            parser.AssertSuccess("a,a,a", "aaa", 5);
+            parser.AssertSuccess("aaa", "a", 1);
+            parser.AssertSuccess("b", "", 0);
+        }
+
+        [Fact]
         public void ThenKeepWorks()
         {
             var parser = Match('a').ThenKeep(Match('b')).CompileParser("ThenKeepWorks");

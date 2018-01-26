@@ -1,4 +1,6 @@
-﻿namespace PageOfBob.Parsing.Compiled.GeneralRules
+﻿using Sigil;
+
+namespace PageOfBob.Parsing.Compiled.GeneralRules
 {
     public class ThenKeepRule<L, R> : AbstractThenRule<L, R, R>
     {
@@ -9,7 +11,7 @@
 
         public override string Name { get; }
 
-        protected override void EmitTransform<TDelegate>(CompilerContext<TDelegate> context) // lv, rv
+        protected override void EmitTransform<TDelegate>(CompilerContext<TDelegate> context, Local pos) // lv, rv
         {
             var emit = context.Emit;
             using (var rightValue = emit.DeclareLocal<R>())

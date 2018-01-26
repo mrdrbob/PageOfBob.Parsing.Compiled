@@ -6,7 +6,7 @@ namespace PageOfBob.Parsing.Compiled.SpanRules
     {
         public static void EmitLoadStringSpan<TDelegate>(this CompilerContext<TDelegate> context, Local pos)
         {
-            context.Emit.LoadArgument(1); // str
+            context.Emit.LoadLocal(context.StringLocal); // str
             context.Emit.LoadLocal(pos); // str, pos
             context.Emit.Duplicate(); // str, pos, pos
             context.Emit.LoadConstant(1); // str, pos, pos, 1
@@ -17,7 +17,7 @@ namespace PageOfBob.Parsing.Compiled.SpanRules
         public static void EmitLoadStringSpan<TDelegate>(this CompilerContext<TDelegate> context, Local pos, Local originalPosition)
         {
             // ...
-            context.Emit.LoadArgument(1); // str
+            context.Emit.LoadLocal(context.StringLocal); // str
             context.Emit.LoadLocal(originalPosition); // str, opos
             context.Emit.LoadLocal(pos); // str, opos, pos
 

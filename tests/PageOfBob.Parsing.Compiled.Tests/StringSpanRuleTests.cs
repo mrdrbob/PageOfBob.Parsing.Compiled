@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using static PageOfBob.Parsing.Compiled.SpanRules.Rules;
+using static PageOfBob.Parsing.Compiled.GeneralRules.Rules;
 
 namespace PageOfBob.Parsing.Compiled.Tests
 {
@@ -131,6 +132,19 @@ namespace PageOfBob.Parsing.Compiled.Tests
             parser.AssertFailure("", 0);
             parser.AssertFailure("a", 0);
             parser.AssertSuccess("000", new StringSpan("000", 0, 3), 3);
+        }
+
+        [Fact]
+        public void ThenCreateStringWorks()
+        {
+            var parser = GetPosition
+                .ThenIgnore(Text('a').Required())
+                .ThenIgnore(Text('b').Required())
+                .ThenCreateSpan()
+                .CompileParser("ThenCreateStringWorks");
+            parser.AssertSuccess("aabbcc", new StringSpan("aabbcc", 0, 4), 4);
+            parser.AssertSuccess("abab", new StringSpan("abab", 0, 2), 2);
+            parser.AssertFailure("c", 0);
         }
     }
 }

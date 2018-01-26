@@ -19,7 +19,7 @@ namespace PageOfBob.Parsing.Compiled.AbstractRules
             using (var pos = emit.DeclareLocal<int>())
             {
                 emit.StoreLocal(pos); // ...
-                emit.LoadArgument(1); // str
+                emit.LoadLocal(context.StringLocal); // str
                 emit.LoadLocal(pos); // str, pos
                 emit.CallVirtual(typeof(string).GetMethod("get_Chars", new[] { typeof(int) })); // c
 
