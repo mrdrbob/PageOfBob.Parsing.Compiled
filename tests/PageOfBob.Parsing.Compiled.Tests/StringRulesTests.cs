@@ -53,6 +53,7 @@ namespace PageOfBob.Parsing.Compiled.Tests
             parser.AssertFailure("0", 0);
             parser.AssertFailure("", 0);
             parser.AssertSuccess("a", 'a', 1);
+            parser.AssertSuccess("aaa", 'a', 1);
         }
 
         [Fact]

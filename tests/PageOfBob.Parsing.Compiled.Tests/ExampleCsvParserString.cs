@@ -31,41 +31,4 @@ namespace PageOfBob.Parsing.Compiled.Tests
             return line.CompileParser("CsvLineParser");
         }
     }
-    
-    /*
-    public static class ExampleCsvSpanParser
-    {
-        static IParser<List<StringSpan>> parser;
-
-        public static IParser<List<StringSpan>> ParseCsvLine() => parser ?? (parser = _ParseCsvLine());
-
-        static IParser<List<StringSpan>> _ParseCsvLine()
-        {
-            var quote = MatchSpan('"');
-            var comma = MatchSpan(',');
-            var whitespace = MatchSpanMany(x => x == ' ' || x == '\t');
-            var eol = MatchSpanMany(x => x == '\r' || x == '\n').Required();
-
-            var doubleQuote = quote.ThenIgnore(quote);
-            var quotedContent = Any(MatchSpanMany(x => x != '"').Required(), doubleQuote).ManyAsSpan();
-
-            var quotedValue = quote.ThenKeep(quotedContent).ThenIgnore(quote);
-            var unquotedValue = MatchSpanMany(x => x != '"' && x != ',' && x != '\n' && x != '\r');
-            var value = Any(quotedValue, unquotedValue).ThenIgnore(whitespace);
-            var secondValue = comma.ThenIgnore(whitespace).ThenKeep(value);
-
-            // TODO: Find a better way to do this.
-            // Stupid separators.
-            var line = value
-                .Then(secondValue.Many(), (first, list) =>
-                {
-                    list.Insert(0, first);
-                    return list;
-                })
-                .ThenIgnore(eol);
-
-            return line.CompileParser("CsvLineSpanParser");
-        }
-    }
-    */
 }
